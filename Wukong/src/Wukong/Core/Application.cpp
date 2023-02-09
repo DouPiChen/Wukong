@@ -105,11 +105,9 @@ namespace Wukong
 
         // glad: load all OpenGL function pointers
         // ---------------------------------------
-        if (!gladLoadGL(glfwGetProcAddress))
-        {
-            std::cout << "Failed to initialize GLAD" << std::endl;
-        }
-
+        int version = gladLoadGL(glfwGetProcAddress);
+        WU_CORE_ASSERT(version, "Failed to initialize GLAD2");
+        WU_CORE_INFO("Loaded OpenGL {0}.{1}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
 
         // build and compile our shader program
         // ------------------------------------
@@ -124,7 +122,7 @@ namespace Wukong
         if (!success)
         {
             glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+            WU_CORE_ERROR("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n{0}", infoLog);
         }
         // fragment shader
         unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -135,7 +133,7 @@ namespace Wukong
         if (!success)
         {
             glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+            WU_CORE_ERROR("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n{0}", infoLog);
         }
         // link shaders
         unsigned int shaderProgram = glCreateProgram();
@@ -146,7 +144,7 @@ namespace Wukong
         glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
         if (!success) {
             glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+            WU_CORE_ERROR("ERROR::SHADER::PROGRAM::LINKING_FAILED\n{0}", infoLog);
         }
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
