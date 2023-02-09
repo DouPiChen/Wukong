@@ -40,6 +40,7 @@ project "Wukong"
 	includedirs
 	{
 		"%{prj.name}/src",
+		"%{prj.name}/3rdparty/spdlog/include"
 	}
 
 	links
@@ -91,6 +92,7 @@ project "Sandbox"
 
 	includedirs
 	{
+		"Wukong/3rdparty/spdlog/include",
 		"Wukong/src"
 	}
 

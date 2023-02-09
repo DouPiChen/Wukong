@@ -1,0 +1,3 @@
+[submodule "Wukong/3rdparty/spdlog"]
+	path = Wukong/3rdparty/spdlog
+	url = https://github.com/gabime/spdlog
