@@ -1,3 +1,9 @@
 [submodule "Wukong/3rdparty/spdlog"]
 	path = Wukong/3rdparty/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Wukong/3rdparty/glfw"]
+	path = Wukong/3rdparty/glfw
+	url = https://github.com/glfw/glfw
+[submodule "Wukong/3rdparty/imgui"]
+	path = Wukong/3rdparty/imgui
+	url = https://github.com/ocornut/imgui

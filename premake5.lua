@@ -16,6 +16,8 @@ workspace "Wukong"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+include "Wukong/3rdparty"
+
 
 project "Wukong"
 	location "Wukong"
@@ -37,15 +39,25 @@ project "Wukong"
 
 	}
 
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/3rdparty/spdlog/include"
+		"%{prj.name}/3rdparty/spdlog/include",
+		"%{prj.name}/3rdparty/glfw/include",
+		"%{prj.name}/3rdparty/glad/include",
+		"%{prj.name}/3rdparty/imgui"
 	}
 
 	links
 	{
-
+		"GLFW",
+		"glad",
+		"ImGui",
 		"opengl32.lib"
 	}
 
@@ -54,21 +66,24 @@ project "Wukong"
 
 		defines
 		{
-
+			"GLFW_INCLUDE_NONE"
 		}
 
 
 	filter "configurations:Debug"
+		systemversion "latest"
 		defines "WU_DEBUG"
 		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
+		systemversion "latest"
 		defines "WU_RELEASE"
 		runtime "Release"
 		optimize "On"
 		
 	filter "configurations:Dist"
+		systemversion "latest"
 		defines "WU_DIST"
 		runtime "Release"
 		optimize "On"
@@ -93,7 +108,8 @@ project "Sandbox"
 	includedirs
 	{
 		"Wukong/3rdparty/spdlog/include",
-		"Wukong/src"
+		"Wukong/src",
+		"Wukong/3rdparty"
 	}
 
 	links
@@ -108,7 +124,7 @@ project "Sandbox"
 
 		defines
 		{
-			"FE_PLATFORM_WINDOWS",
+			"WU_PLATFORM_WINDOWS",
 		}
 
 	filter "configurations:Debug"
