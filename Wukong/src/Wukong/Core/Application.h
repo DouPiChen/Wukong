@@ -15,6 +15,7 @@ namespace Wukong
 
 		void Run();
 		void OnEvent(Event& e);
+		void DrawSomething();
 
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }

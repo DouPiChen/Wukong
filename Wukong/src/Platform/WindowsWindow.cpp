@@ -4,11 +4,12 @@
 #include "Wukong/Event/KeyEvent.h"
 #include "Wukong/Event/MouseEvent.h"
 
-
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 namespace Wukong
-{
+{ 
+
 	static bool s_GLFWInitialized = false;
 
 	static void GLFWErrorCallback(int error, const char* description)
