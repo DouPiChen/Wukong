@@ -6,3 +6,5 @@
 #include "Wukong/Core/Log.h"
 
 #include "Wukong/Core/EntryPoint.h"
+
+#include "Wukong/Renderer/Buffer.h"

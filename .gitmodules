@@ -7,3 +7,6 @@
 [submodule "Wukong/3rdparty/imgui"]
 	path = Wukong/3rdparty/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "Wukong/3rdparty/glm"]
+	path = Wukong/3rdparty/glm
+	url = https://github.com/g-truc/glm

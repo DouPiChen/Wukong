@@ -5,6 +5,8 @@
 #include "Wukong/Event/ApplicationEvent.h"
 #include "Wukong/Core/Window.h"
 
+#include "Wukong/Renderer/Buffer.h"
+
 namespace Wukong
 {
 	class Application
@@ -19,6 +21,7 @@ namespace Wukong
 
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
+
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
@@ -28,6 +31,8 @@ namespace Wukong
 		bool m_Minimized = false;
 		float m_LastFrameTime = 0.0f;
 		static Application* s_Instance;
+
+		Ref<VertexArray> m_VertexArray;
 	};
 
 	Application* CreateApplication();
