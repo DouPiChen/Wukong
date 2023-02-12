@@ -14,9 +14,6 @@ namespace Wukong
 	{
 		glfwMakeContextCurrent(m_WindowHandle);
 		
-
-		// glad: load all OpenGL function pointers
-		// ---------------------------------------
 		if (!gladLoadGL(glfwGetProcAddress))
 		{
 			WU_CORE_ASSERT(false, "Failed to initialize GLAD2");

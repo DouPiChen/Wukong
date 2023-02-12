@@ -15,6 +15,10 @@ namespace Wukong
 		virtual void Bind()const override;
 		virtual void Unbind() const override;
 
+		void SetBool(const std::string& name, bool value);
+		void SetInt(const std::string& name, int value);
+		void SetFloat(const std::string& name, float value);
+
 		virtual const std::string& GetName() const override { return m_Name; }
 
 	private:

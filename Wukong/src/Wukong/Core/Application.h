@@ -32,7 +32,7 @@ namespace Wukong
 		float m_LastFrameTime = 0.0f;
 		static Application* s_Instance;
 
-		Ref<VertexArray> m_VertexArray;
+		Ref<VertexArray> m_VertexArray, m_VertexArray2;
 	};
 
 	Application* CreateApplication();

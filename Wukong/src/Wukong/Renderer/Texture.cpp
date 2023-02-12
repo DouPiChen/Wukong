@@ -1,14 +1,13 @@
 #include "Wupch.h"
 
 #include "Renderer.h"
-#include "Shader.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "Texture.h"
+#include "Platform/OpenGL/OpenGLTexture.h"
+
 
 namespace Wukong
 {
-	Ref<Shader> Shader::Create(const std::string& name,
-		const std::string& vertexSrc,
-		const std::string& fragmentSrc)
+	Ref<Texture2D> Texture2D::Create(const std::string& path)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -16,9 +15,9 @@ namespace Wukong
 				WU_CORE_ASSERT(false, "RendererAPI::None is not supported");
 				return nullptr;
 			case RendererAPI::API::OpenGL:
-				return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
+				return CreateRef<OpenGLTexture2D>(path);
 		}
 		WU_CORE_ASSERT(false, "Unknown RendererAPI");
-		return nullptr;
+		return nullptr;	
 	}
 }

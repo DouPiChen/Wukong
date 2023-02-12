@@ -36,7 +36,10 @@ project "Wukong"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
-
+		"%{prj.name}/3rdparty/glm/glm/**.h",
+		"%{prj.name}/3rdparty/glm/glm/**.inl",
+		"%{prj.name}/3rdparty/stb_image/**.h",
+		"%{prj.name}/3rdparty/stb_image/**.cpp"
 	}
 
 	defines
@@ -50,7 +53,9 @@ project "Wukong"
 		"%{prj.name}/3rdparty/spdlog/include",
 		"%{prj.name}/3rdparty/glfw/include",
 		"%{prj.name}/3rdparty/glad/include",
-		"%{prj.name}/3rdparty/imgui"
+		"%{prj.name}/3rdparty/imgui",
+		"%{prj.name}/3rdparty/glm",
+		"%{prj.name}/3rdparty/stb_image"
 	}
 
 	links
@@ -109,7 +114,8 @@ project "Sandbox"
 	{
 		"Wukong/3rdparty/spdlog/include",
 		"Wukong/src",
-		"Wukong/3rdparty"
+		"Wukong/3rdparty",
+		"Wukong/3rdparty/glm"
 	}
 
 	links

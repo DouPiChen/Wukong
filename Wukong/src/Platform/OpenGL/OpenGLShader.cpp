@@ -30,6 +30,21 @@ namespace Wukong
 	{
 		glUseProgram(0);
 	}
+
+    void OpenGLShader::SetBool(const std::string& name, bool value)
+    {
+        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), (int)value);
+    }
+
+    void OpenGLShader::SetInt(const std::string& name, int value)
+    {
+        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
+    }
+
+    void OpenGLShader::SetFloat(const std::string& name, float value)
+    {
+        glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
+    }
 	
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSrc)
 	{
