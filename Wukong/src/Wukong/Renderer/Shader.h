@@ -12,6 +12,7 @@ namespace Wukong
 		virtual void Unbind() const = 0;
 
 		virtual const std::string& GetName() const = 0;
+		virtual const uint32_t GetRendererID() const = 0;
 
 		static Ref<Shader> Create(const std::string& name, 
 			const std::string& vertexSrc, 

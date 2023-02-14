@@ -117,6 +117,7 @@ namespace Wukong
 				}
 			});
 
+		
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset) 
 			{
 				WindowData data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -130,6 +131,7 @@ namespace Wukong
 				MouseMovedEvent event((float)xPos, (float)yPos);
 				data.EventCallback(event);
 			});
+		
 	}
 
 	void WindowsWindow::ShutDown()
