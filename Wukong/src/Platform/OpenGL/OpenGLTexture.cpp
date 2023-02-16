@@ -23,9 +23,22 @@ namespace Wukong
 
         stbi_set_flip_vertically_on_load(true);
         unsigned char* data = stbi_load(m_Path.c_str(), &width, &height, &nrChannels, 0);
+        GLenum dataFormat = 0;
+        if (nrChannels == 4)
+        {
+            dataFormat = GL_RGBA;
+        }
+        else if (nrChannels == 3)
+        {
+            dataFormat = GL_RGB;
+        }
+        else
+        {
+            WU_CORE_ASSERT(false, "Texture Format not supported");
+        }
         if (data)
         {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(GL_TEXTURE_2D, 0, dataFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else

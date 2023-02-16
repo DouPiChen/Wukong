@@ -4,6 +4,8 @@
 #include "Wukong/Event/KeyEvent.h"
 #include "Wukong/Event/MouseEvent.h"
 
+#include "Platform/OpenGL/OpenGLContext.h"
+
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
@@ -48,7 +50,9 @@ namespace Wukong
 		}
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
+	
+		m_Context = CreateScope<OpenGLContext>(m_Window);
+		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -142,7 +146,7 @@ namespace Wukong
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

@@ -5,7 +5,10 @@
 #include "Wukong/Event/ApplicationEvent.h"
 #include "Wukong/Core/Window.h"
 
+#include "Wukong/Renderer/Camera.h"
 #include "Wukong/Renderer/Buffer.h"
+#include "Wukong/Renderer/Shader.h"
+#include "Wukong/Renderer/Texture.h"
 
 namespace Wukong
 {
@@ -15,24 +18,21 @@ namespace Wukong
 		Application();
 		virtual ~Application() = default;
 
-		void Run();
-		void OnEvent(Event& e);
-		void DrawSomething();
+		virtual void Run();
+		virtual void OnEvent(Event& e);
 
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
 
-	private:
-		bool OnWindowClose(WindowCloseEvent& e);
-		bool OnWindowResize(WindowResizeEvent& e);
+	protected:
+		virtual bool OnWindowClose(WindowCloseEvent& e);
+		virtual bool OnWindowResize(WindowResizeEvent& e);
 
-		std::unique_ptr<Window> m_Window;
+		Scope<Window> m_Window;
 		bool m_Running = true;
 		bool m_Minimized = false;
 		float m_LastFrameTime = 0.0f;
 		static Application* s_Instance;
-
-		Ref<VertexArray> m_VertexArray, m_VertexArray2;
 	};
 
 	Application* CreateApplication();

@@ -6,15 +6,44 @@
 
 namespace Wukong
 {
-	OpenGLShader::OpenGLShader(const std::string& name,
-		const std::string& vertexSrc,
-		const std::string& fragmentSrc)
-	{
-		std::unordered_map<GLenum, std::string> sources;
-		sources[GL_VERTEX_SHADER] = vertexSrc;
-		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
-		Compile(sources);
-	}
+
+    OpenGLShader::OpenGLShader(const std::string& name, 
+        const std::string& vertexPath,
+        const std::string& fragmentPath)
+    {
+        std::string vertexSrc;
+        std::string fragmentSrc;
+        std::ifstream vShaderFile;
+        std::ifstream fShaderFile;
+
+        vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        try
+        {
+            vShaderFile.open(vertexPath.c_str());
+            fShaderFile.open(fragmentPath.c_str());
+            std::stringstream vShaderStream, fShaderStream;
+
+            vShaderStream << vShaderFile.rdbuf();
+            fShaderStream << fShaderFile.rdbuf();
+
+            vShaderFile.close();
+            fShaderFile.close();
+
+            vertexSrc = vShaderStream.str();
+            fragmentSrc = fShaderStream.str();
+        }
+        catch (std::ifstream::failure& e)
+        {
+            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
+        }
+
+        std::unordered_map<GLenum, std::string> sources;
+        sources[GL_VERTEX_SHADER] = vertexSrc;
+        sources[GL_FRAGMENT_SHADER] = fragmentSrc;
+        Compile(sources);
+
+    }
 
 	OpenGLShader::~OpenGLShader()
 	{
@@ -77,4 +106,53 @@ namespace Wukong
 
         m_RendererID = shaderProgram;
 	}
+
+    void OpenGLShader::SetBool(const std::string& name, bool value) const
+    {
+        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), (int)value);
+    }
+    void OpenGLShader::SetInt(const std::string& name, int value) const
+    {
+        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
+    }
+    void OpenGLShader::SetFloat(const std::string& name, float value) const
+    {
+        glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
+    }
+    void OpenGLShader::SetVec2(const std::string& name, const glm::vec2& value) const
+    {
+        glUniform2fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+    }
+    void OpenGLShader::SetVec2(const std::string& name, float x, float y) const
+    {
+        glUniform2f(glGetUniformLocation(m_RendererID, name.c_str()), x, y);
+    }
+    void OpenGLShader::SetVec3(const std::string& name, const glm::vec3& value) const
+    {
+        glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+    }
+    void OpenGLShader::SetVec3(const std::string& name, float x, float y, float z) const
+    {
+        glUniform3f(glGetUniformLocation(m_RendererID, name.c_str()), x, y, z);
+    }
+    void OpenGLShader::SetVec4(const std::string& name, const glm::vec4& value) const
+    {
+        glUniform4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+    }
+    void OpenGLShader::SetVec4(const std::string& name, float x, float y, float z, float w) const
+    {
+        glUniform4f(glGetUniformLocation(m_RendererID, name.c_str()), x, y, z, w);
+    }
+    void OpenGLShader::SetMat2(const std::string& name, const glm::mat2& mat) const
+    {
+        glUniformMatrix2fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+    void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& mat) const
+    {
+        glUniformMatrix3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+    void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& mat) const
+    {
+        glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
 }

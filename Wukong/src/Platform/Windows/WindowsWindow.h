@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Wukong/Core/Window.h"
+#include "Wukong/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
 
@@ -27,12 +28,13 @@ namespace Wukong
 		virtual void ShutDown();
 
 		GLFWwindow* m_Window;
+		Scope<GraphicsContext> m_Context;
 
 		struct WindowData
 		{
-			std::string Title;
-			unsigned int Width, Height;
-			bool VSync;
+			std::string Title = "Wukong Engine";
+			unsigned int Width = 800, Height = 600;
+			bool VSync = true;
 			EventCallbackFn EventCallback;
 		};
 		WindowData m_Data;

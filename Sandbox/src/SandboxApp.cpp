@@ -1,14 +1,10 @@
 #include <Wukong.h>
+#include <Wukong/Core/EntryPoint.h>
 
-class Sandbox : public Wukong::Application
-{
-public:
-	Sandbox() {}
-	~Sandbox() {}
+#include "Sandbox3D.h"
 
-};
 
 Wukong::Application* Wukong::CreateApplication()
 {
-	return new Sandbox();
+	return new Sandbox3D();
 }
