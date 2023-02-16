@@ -5,13 +5,10 @@
 
 #include "Camera.h"
 #include "Wukong/Core/KeyCodes.h"
+#include "Wukong/Core/Input.h"
 
 namespace Wukong
 {
-    bool firstMouse = true;
-    float lastX = 800.0f / 2.0;
-    float lastY = 600.0 / 2.0;
-
 	PrespectiveCamera::PrespectiveCamera(float posX, float posY,
 		float posZ, float upX, float upY, float upZ, float yaw, float pitch)
 	{
@@ -32,6 +29,11 @@ namespace Wukong
 
 	PrespectiveCamera::~PrespectiveCamera()
 	{}
+
+    void PrespectiveCamera::OnUpdate(TimeStep ts)
+    {
+        m_DeltaTime = ts;
+    }
 
     void PrespectiveCamera::OnEvent(Event& e)
     {
@@ -55,15 +57,14 @@ namespace Wukong
 
     bool PrespectiveCamera::OnKeyboard(KeyPressedEvent& e)
     {
-        float deltaTime = 0.03f;
-        float velocity = m_MovementSpeed * deltaTime;
-        if (e.GetKeycode() == Key::W) //forward
+        float velocity = m_MovementSpeed * m_DeltaTime;
+        if (Input::IsKeyPressed(Key::W)) //forward
             m_Position += m_Front * velocity;
-        if (e.GetKeycode() == Key::S) //backward
+        if (Input::IsKeyPressed(Key::S)) //backward
             m_Position -= m_Front * velocity;
-        if (e.GetKeycode() == Key::A) //left
+        if (Input::IsKeyPressed(Key::A)) //left
             m_Position -= m_Right * velocity;
-        if (e.GetKeycode() == Key::D) //right
+        if (Input::IsKeyPressed(Key::D)) //right
             m_Position += m_Right * velocity;
 
         m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
@@ -72,21 +73,20 @@ namespace Wukong
 
     bool PrespectiveCamera::OnMouseMovement(MouseMovedEvent& e)
     {
-        float xpos = e.GetXPos();
-        float ypos = e.GetYPos();
+        auto [xpos, ypos] = Input::GetMousePosition();
 
-        if (firstMouse)
+        if (m_FirstMouse)
         {
-            lastX = xpos;
-            lastY = ypos;
-            firstMouse = false;
+            m_LastX = xpos;
+            m_LastY = ypos;
+            m_FirstMouse = false;
         }
 
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos;
+        float xoffset = xpos - m_LastX;
+        float yoffset = m_LastY - ypos;
 
-        lastX = xpos;
-        lastY = ypos;
+        m_LastX = xpos;
+        m_LastY = ypos;
 
         xoffset *= m_MouseSensitivity;
         yoffset *= m_MouseSensitivity;
@@ -114,6 +114,14 @@ namespace Wukong
 
         m_ProjectionMatrix = glm::perspective(glm::radians(m_Zoom), m_ScreenWidth / m_ScreenHeight, 0.1f, 100.0f);
         return false;
+    }
+
+    void PrespectiveCamera::SetScreenParam(float width, float height)
+    {
+        m_ScreenHeight = height;
+        m_ScreenWidth = width;
+        m_LastX = m_ScreenWidth / 2;
+        m_LastY = m_ScreenHeight / 2;
     }
 
 
@@ -150,6 +158,11 @@ namespace Wukong
         UpdateCameraVectors();
     }
 
+    void OrthographicCamera::OnUpdate(TimeStep ts)
+    {
+        m_DeltaTime = ts;
+    }
+
     void OrthographicCamera::OnEvent(Event& e)
     {
         EventDispatcher dispatcher(e);
@@ -159,33 +172,33 @@ namespace Wukong
 
     bool OrthographicCamera::OnKeyboard(KeyPressedEvent& e)
     {
-        float deltaTime = 0.03f;
-        float velocity = m_MovementSpeed * deltaTime;
-        float rotate_velocity = m_RotationSpeed * deltaTime;
-        if (e.GetKeycode() == Key::W) //forward
+
+        float velocity = m_MovementSpeed * m_DeltaTime;
+        float rotate_velocity = m_RotationSpeed * m_DeltaTime;
+        if (Input::IsKeyPressed(Key::W)) //forward
         {
             m_Position.x += -sin(glm::radians(m_Rotation)) * velocity;
             m_Position.y += cos(glm::radians(m_Rotation)) * velocity;
         }
-        if (e.GetKeycode() == Key::S) //backward
+        if (Input::IsKeyPressed(Key::S)) //backward
         {
             m_Position.x -= -sin(glm::radians(m_Rotation)) * velocity;
             m_Position.y -= cos(glm::radians(m_Rotation)) * velocity;
         }
-        if (e.GetKeycode() == Key::A) //left
+        if (Input::IsKeyPressed(Key::A)) //left
         {
             m_Position.x -= cos(glm::radians(m_Rotation)) * velocity;
             m_Position.y -= sin(glm::radians(m_Rotation)) * velocity;
         }
-        if (e.GetKeycode() == Key::D) //right
+        if (Input::IsKeyPressed(Key::D)) //right
         {
             m_Position.x += cos(glm::radians(m_Rotation)) * velocity;
             m_Position.y += sin(glm::radians(m_Rotation)) * velocity;
         }
 
-        if (e.GetKeycode() == Key::Q) //left rotation
+        if (Input::IsKeyPressed(Key::Q)) //left rotation
             m_Rotation -= rotate_velocity;
-        if (e.GetKeycode() == Key::E) //right rotation
+        if (Input::IsKeyPressed(Key::E)) //right rotation
             m_Rotation += rotate_velocity;
         if (m_Rotation > 180.0f)
         {
@@ -196,7 +209,6 @@ namespace Wukong
             m_Rotation += 360.0f;
         }
 
-        //WU_CORE_INFO("{0}|{1}|{2}", m_Position.x, m_Position.y, m_Rotation);
         UpdateCameraVectors();
         return false;
     }

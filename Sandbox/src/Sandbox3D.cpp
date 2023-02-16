@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 #include "Platform/OpenGL/OpenGLShader.h"
 
 float vertices[] = {
@@ -71,15 +72,19 @@ glm::vec3 cubePositions[] = {
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
-Sandbox3D::Sandbox3D()
+Sandbox3DLayer::Sandbox3DLayer()
+    :Layer("Sandbox3DLayer")
 {
-    WU_CORE_INFO("Welcome to Sandbox3D World");
-    m_Window = std::unique_ptr<Wukong::Window>(Wukong::Window::Create());
-    m_Window->SetEventCallback(BIND_EVENT_FN(Wukong::Application::OnEvent));
+}
 
-    //m_Camera = Wukong::PrespectiveCamera(0.0f, 0.0f, 3.0f, 0.0f, 1.0f, 0.0f, -90.0f, 0.0f);
-    m_Camera = Wukong::OrthographicCamera(-1.0f, 1.0f, -1.0f, 1.0f);
-    m_Camera.SetScreenParam((float)(GetWindow().GetWidth()), (float)(GetWindow().GetHeight()));
+Sandbox3DLayer::~Sandbox3DLayer()
+{}
+
+void Sandbox3DLayer::OnAttach()
+{
+    m_Camera = Wukong::PrespectiveCamera(0.0f, 0.0f, 3.0f, 0.0f, 1.0f, 0.0f, -90.0f, 0.0f);
+    //m_Camera = Wukong::OrthographicCamera(-1.0f, 1.0f, -1.0f, 1.0f);
+    //m_Camera.SetScreenParam((float)(window->GetWidth()), (float)(window->GetHeight()));
 
     m_VertexArray = Wukong::VertexArray::Create();
     Wukong::Ref<Wukong::VertexBuffer> vertexBuffer = Wukong::VertexBuffer::Create(vertices, sizeof(vertices));
@@ -107,48 +112,39 @@ Sandbox3D::Sandbox3D()
     m_Texture2->Bind(1);
 }
 
-Sandbox3D::~Sandbox3D()
+void Sandbox3DLayer::OnDetach()
 {}
 
-void Sandbox3D::OnEvent(Wukong::Event& e)
+void Sandbox3DLayer::OnEvent(Wukong::Event& e)
 {
-    Wukong::Application::OnEvent(e);
-
     m_Camera.OnEvent(e);
-    //WU_CORE_TRACE(e);
 }
 
-void Sandbox3D::Run()
+void Sandbox3DLayer::OnUpdate(Wukong::TimeStep ts)
 {
-    WU_CORE_INFO("Sandbox3D Run");
-    while (m_Running)
+
+    Wukong::RenderCommand::SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
+    Wukong::RenderCommand::Clear();
+
+    Wukong::Renderer::BeingScene(m_Camera);
+
+    glm::mat4 projection = m_Camera.GetProjectionMatrix();
+    std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetMat4("projection", projection);
+    glm::mat4 view = m_Camera.GetViewMatrix();
+    std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetMat4("view", view);
+
+    m_Shader->Bind();
+    m_VertexArray->Bind();
+    for (unsigned int i = 0; i < 10; i++)
     {
-        Wukong::RenderCommand::Init();
-        Wukong::RenderCommand::SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
-        Wukong::RenderCommand::Clear();
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, cubePositions[i]);
+        float angle = 20.0f * i;
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetMat4("model", model);
 
-        Wukong::Renderer::BeingScene(m_Camera);
-
-        glm::mat4 projection = m_Camera.GetProjectionMatrix();
-        std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetMat4("projection", projection);
-        glm::mat4 view = m_Camera.GetViewMatrix();
-        std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetMat4("view", view);
-
-        m_Shader->Bind();
-        m_VertexArray->Bind();
-        for (unsigned int i = 0; i < 10; i++)
-        {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetMat4("model", model);
-
-            Wukong::Renderer::Submit(m_Shader, m_VertexArray);
-        }
-
-        Wukong::Renderer::EndScene();
-
-        m_Window->OnUpdate();
+        Wukong::Renderer::Submit(m_Shader, m_VertexArray);
     }
+
+    Wukong::Renderer::EndScene();
 }

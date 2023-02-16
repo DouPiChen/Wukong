@@ -1,27 +1,17 @@
 #include "Wupch.h"
 
-#include "Application.h"
-#include "Core.h"
-
-#include "Wukong/Renderer/Buffer.h"
-#include "Wukong/Renderer/Shader.h"
-#include "Platform/OpenGL/OpenGLShader.h"
-#include "Platform/OpenGL/OpenGLContext.h"
-#include "Wukong/Renderer/Texture.h"
-#include "Wukong/Renderer/RenderCommand.h"
-#include "Wukong/Renderer/Renderer.h"
-#include <glad/gl.h>
 #include <GLFW/glfw3.h>
-#include <stb_image.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
+#include "Application.h"
+#include "TimeStep.h"
+
+#include "Wukong/Renderer/Renderer.h"
+
 
 namespace Wukong
 {
     Application* Application::s_Instance = nullptr;
  
-
 	Application::Application()
 	{
 		WU_CORE_ASSERT(!s_Instance, "Application already exists");
@@ -29,6 +19,12 @@ namespace Wukong
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
+		Renderer::Init();
+	}
+
+	Application::~Application()
+	{
+		Renderer::Shutdown();
 	}
 
 	void Application::OnEvent(Event& e)
@@ -36,7 +32,13 @@ namespace Wukong
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(Application::OnWindowResize));
-		//WU_CORE_TRACE(e);
+
+		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
+		{
+			(*it)->OnEvent(e);
+			if (e.IsHandled())
+				break;
+		}
 	}
 
 	void Application::Run()
@@ -44,6 +46,18 @@ namespace Wukong
 		WU_CORE_INFO("Wukong Engine Run");
 		while (m_Running)
 		{
+			float time = (float)glfwGetTime();
+			TimeStep ts = time - m_LastFrameTime;
+			m_LastFrameTime = time;
+
+			if (!m_Minimized)
+			{
+				for (Layer* layer : m_LayerStack)
+				{
+					layer->OnUpdate(ts);
+				}
+			}
+
 			m_Window->OnUpdate();
 		}
 
@@ -68,6 +82,14 @@ namespace Wukong
 		return false;
 	}
 
+	void Application::PushLayer(Layer* layer)
+	{
+		m_LayerStack.PushLayer(layer);
+	}
 
+	void Application::PushOverlay(Layer* layer)
+	{
+		m_LayerStack.PushOverlay(layer);
+	}
 
 }

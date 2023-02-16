@@ -12,6 +12,7 @@ namespace Wukong
 	{
 	public:
 		static void Init();
+		static void Shutdown();
 		static void BeingScene(Camera& camera);
 		static void Submit(const Ref<Shader> shader, const Ref<VertexArray>& vertexArray);
 		static void EndScene();

@@ -12,6 +12,10 @@ namespace Wukong
 		RenderCommand::Init();
 	}
 
+	void Renderer::Shutdown()
+	{
+	}
+
 	void Renderer::BeingScene(Camera& camera)
 	{
 		s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();

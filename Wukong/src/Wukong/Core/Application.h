@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Core.h"
+
+#include "Layer.h"
 #include "Wukong/Event/Event.h"
 #include "Wukong/Event/ApplicationEvent.h"
 #include "Wukong/Core/Window.h"
@@ -16,21 +18,25 @@ namespace Wukong
 	{
 	public:
 		Application();
-		virtual ~Application() = default;
+		virtual ~Application();
 
-		virtual void Run();
-		virtual void OnEvent(Event& e);
+		void Run();
+		void OnEvent(Event& e);
+
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
 
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
 
 	protected:
-		virtual bool OnWindowClose(WindowCloseEvent& e);
-		virtual bool OnWindowResize(WindowResizeEvent& e);
+		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 
 		Scope<Window> m_Window;
 		bool m_Running = true;
 		bool m_Minimized = false;
+		LayerStack m_LayerStack;
 		float m_LastFrameTime = 0.0f;
 		static Application* s_Instance;
 	};
