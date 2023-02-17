@@ -6,7 +6,7 @@ class Sandbox3DLayer : public Wukong::Layer
 {
 public:
 	Sandbox3DLayer();
-	~Sandbox3DLayer();
+	virtual ~Sandbox3DLayer();
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
 	virtual void OnUpdate(Wukong::TimeStep ts) override;

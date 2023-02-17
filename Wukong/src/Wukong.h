@@ -8,6 +8,7 @@
 #include "Wukong/Core/KeyCodes.h"
 
 #include "Wukong/Renderer/Renderer.h"
+#include "Wukong/Renderer/Renderer2D.h"
 #include "Wukong/Renderer/RenderCommand.h"
 #include "Wukong/Renderer/Buffer.h"
 #include "Wukong/Renderer/Texture.h"

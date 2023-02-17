@@ -1,6 +1,7 @@
 #include "Wupch.h"
 
 #include "Renderer.h"
+#include "Renderer2D.h"
 #include "RenderCommand.h"
 
 namespace Wukong
@@ -10,15 +11,18 @@ namespace Wukong
 	void Renderer::Init()
 	{
 		RenderCommand::Init();
+		Renderer2D::Init();
 	}
 
 	void Renderer::Shutdown()
 	{
+		Renderer2D::Shutdown();
 	}
 
 	void Renderer::BeingScene(Camera& camera)
 	{
-		s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+		s_SceneData->ViewMatrix = camera.GetViewMatrix();
+		s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
 	}
 
 	void Renderer::Submit(const Ref<Shader> shader, const Ref<VertexArray>& vertexArray)

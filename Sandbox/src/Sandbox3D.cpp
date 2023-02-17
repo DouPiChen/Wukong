@@ -5,8 +5,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-#include "Platform/OpenGL/OpenGLShader.h"
-
 float vertices[] = {
     // positions          // colors           // texture coords
    -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 1.0f,     0.0f, 0.0f,
@@ -82,16 +80,17 @@ Sandbox3DLayer::~Sandbox3DLayer()
 
 void Sandbox3DLayer::OnAttach()
 {
-    m_Camera = Wukong::PrespectiveCamera(0.0f, 0.0f, 3.0f, 0.0f, 1.0f, 0.0f, -90.0f, 0.0f);
-    //m_Camera = Wukong::OrthographicCamera(-1.0f, 1.0f, -1.0f, 1.0f);
-    //m_Camera.SetScreenParam((float)(window->GetWidth()), (float)(window->GetHeight()));
+    auto& window = Wukong::Application::Get().GetWindow();
+    float width = (float)(window.GetWidth());
+    float height = (float)(window.GetHeight());
+    m_Camera = Wukong::PrespectiveCamera(0.0f, 0.0f, 3.0f, 0.0f, 1.0f, 0.0f, -90.0f, 0.0f, width, height);
 
     m_VertexArray = Wukong::VertexArray::Create();
     Wukong::Ref<Wukong::VertexBuffer> vertexBuffer = Wukong::VertexBuffer::Create(vertices, sizeof(vertices));
     Wukong::BufferLayout layout = {
-        {Wukong::ShaderDataType::Float3, "aPos"},
-        {Wukong::ShaderDataType::Float3, "aColor"},
-        {Wukong::ShaderDataType::Float2, "aTexCoord"}
+        {Wukong::ShaderDataType::Float3, "a_Position"},
+        {Wukong::ShaderDataType::Float3, "a_Color"},
+        {Wukong::ShaderDataType::Float2, "a_TexCoord"}
     };
     vertexBuffer->SetLayout(layout);
     m_VertexArray->AddVertexBuffer(vertexBuffer);
@@ -105,8 +104,8 @@ void Sandbox3DLayer::OnAttach()
     m_Shader = Wukong::Shader::Create("Boxes", "assets/shaders/boxes.vs", "assets/shaders/boxes.fs");
 
     m_Shader->Bind();
-    std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetInt("texture1", 0);
-    std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetInt("texture2", 1);
+    m_Shader->SetInt("u_Texture1", 0);
+    m_Shader->SetInt("u_Texture2", 1);
     m_VertexArray->Bind();
     m_Texture1->Bind(0);
     m_Texture2->Bind(1);
@@ -122,6 +121,7 @@ void Sandbox3DLayer::OnEvent(Wukong::Event& e)
 
 void Sandbox3DLayer::OnUpdate(Wukong::TimeStep ts)
 {
+    m_Camera.OnUpdate(ts);
 
     Wukong::RenderCommand::SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
     Wukong::RenderCommand::Clear();
@@ -129,9 +129,9 @@ void Sandbox3DLayer::OnUpdate(Wukong::TimeStep ts)
     Wukong::Renderer::BeingScene(m_Camera);
 
     glm::mat4 projection = m_Camera.GetProjectionMatrix();
-    std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetMat4("projection", projection);
+    m_Shader->SetMat4("u_Projection", projection);
     glm::mat4 view = m_Camera.GetViewMatrix();
-    std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetMat4("view", view);
+    m_Shader->SetMat4("u_View", view);
 
     m_Shader->Bind();
     m_VertexArray->Bind();
@@ -141,7 +141,7 @@ void Sandbox3DLayer::OnUpdate(Wukong::TimeStep ts)
         model = glm::translate(model, cubePositions[i]);
         float angle = 20.0f * i;
         model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-        std::dynamic_pointer_cast<Wukong::OpenGLShader>(m_Shader)->SetMat4("model", model);
+        m_Shader->SetMat4("u_Model", model);
 
         Wukong::Renderer::Submit(m_Shader, m_VertexArray);
     }
