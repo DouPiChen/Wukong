@@ -1,5 +1,9 @@
 #include "Sandbox2D.h"
 
+#include <imgui/imgui.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 
 Sandbox2DLayer::Sandbox2DLayer()
 	:Layer("Sandbox2DLayer")
@@ -28,19 +32,33 @@ void Sandbox2DLayer::OnUpdate(Wukong::TimeStep ts)
 {
 	m_Camera.OnUpdate(ts);
 
-	Wukong::RenderCommand::SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
-	Wukong::RenderCommand::Clear();
+	{
+		WU_PROFILE_SCOPE("Renderer Prepare");
+		Wukong::RenderCommand::SetClearColor({ 0.2f, 0.3f, 0.3f, 1.0f });
+		Wukong::RenderCommand::Clear();
+	}
 
-	Wukong::Renderer2D::BeginScene(m_Camera);
-	Wukong::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-	Wukong::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-	Wukong::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, m_CheckerboardTexture);
-	Wukong::Renderer2D::EndScene();
-	
+	{
+		WU_PROFILE_SCOPE("Renderer Draw");
+
+		Wukong::Renderer2D::BeginScene(m_Camera);
+		Wukong::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+		Wukong::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
+		Wukong::Renderer2D::DrawQuad({ -0.5f, 0.5f }, { 0.75f, 0.4f }, m_SquareColor);
+		Wukong::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, m_CheckerboardTexture);
+		Wukong::Renderer2D::EndScene();
+	}
 
 }
 
 void Sandbox2DLayer::OnEvent(Wukong::Event& e)
 {
 	m_Camera.OnEvent(e);
+}
+
+void Sandbox2DLayer::OnImGuiRender()
+{
+	ImGui::Begin("Settings");
+	ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+	ImGui::End();
 }

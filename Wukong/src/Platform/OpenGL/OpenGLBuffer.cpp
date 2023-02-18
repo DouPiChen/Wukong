@@ -30,6 +30,7 @@ namespace Wukong
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
 	{
+		WU_PROFILE_FUNCTION();
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
@@ -37,22 +38,26 @@ namespace Wukong
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{
+		WU_PROFILE_FUNCTION();
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
 	void OpenGLVertexBuffer::Bind() const
 	{
+		WU_PROFILE_FUNCTION();
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 	}
 
 	void OpenGLVertexBuffer::Unbind() const
 	{
+		WU_PROFILE_FUNCTION();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
 		:m_Count(count)
 	{
+		WU_PROFILE_FUNCTION();
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count*sizeof(uint32_t), indices, GL_STATIC_DRAW);
@@ -61,43 +66,51 @@ namespace Wukong
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
 	{
+		WU_PROFILE_FUNCTION();
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
 	void OpenGLIndexBuffer::Bind() const
 	{
+		WU_PROFILE_FUNCTION();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 	}
 
 	void OpenGLIndexBuffer::Unbind() const
 	{
+		WU_PROFILE_FUNCTION();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+		WU_PROFILE_FUNCTION();
 		glGenVertexArrays(1, &m_RendererID);
 		glBindVertexArray(m_RendererID);
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
+		WU_PROFILE_FUNCTION();
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
 	void OpenGLVertexArray::Bind() const
 	{
+		WU_PROFILE_FUNCTION();
 		glBindVertexArray(m_RendererID);
 	}
 
 	void OpenGLVertexArray::Unbind() const
 	{
+		WU_PROFILE_FUNCTION();
 		glBindVertexArray(0);
 	}
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer)
 	{
+		WU_PROFILE_FUNCTION();
 		WU_CORE_ASSERT(buffer->GetLayout().GetElements().size(), "VertexBuffer has no layout");
 
 		glBindVertexArray(m_RendererID);
@@ -121,6 +134,7 @@ namespace Wukong
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer)
 	{
+		WU_PROFILE_FUNCTION();
 		glBindVertexArray(m_RendererID);
 		buffer->Bind();
 

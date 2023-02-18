@@ -11,6 +11,7 @@ namespace Wukong
         const std::string& vertexPath,
         const std::string& fragmentPath)
     {
+        WU_PROFILE_FUNCTION();
         std::string vertexSrc;
         std::string fragmentSrc;
         std::ifstream vShaderFile;
@@ -47,22 +48,26 @@ namespace Wukong
 
 	OpenGLShader::~OpenGLShader()
 	{
+        WU_PROFILE_FUNCTION();
 		glDeleteProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Bind() const
 	{
+        WU_PROFILE_FUNCTION();
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
+        WU_PROFILE_FUNCTION();
 		glUseProgram(0);
 	}
 
  
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSrc)
 	{
+        WU_PROFILE_FUNCTION();
         const char* vertexShaderSource = shaderSrc.at(GL_VERTEX_SHADER).c_str();
         const char* fragmentShaderSource = shaderSrc.at(GL_FRAGMENT_SHADER).c_str();
         

@@ -143,7 +143,8 @@ project "ImGui"
 		"%{prj.name}/imstb_rectpack.h",
 		"%{prj.name}/imstb_textedit.h",
 		"%{prj.name}/imstb_truetype.h",
-		"%{prj.name}/imgui_demo.cpp"
+		"%{prj.name}/imgui_demo.cpp",
+		"%{prj.name}/imgui_tables.cpp"
 	}
 
 	filter "system:windows"

@@ -7,11 +7,13 @@ namespace Wukong
 	OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
 		:m_WindowHandle(windowHandle)
 	{
+		WU_PROFILE_FUNCTION();
 		WU_CORE_ASSERT(windowHandle, "OpenGLContext cannot get the windowHandle");
 	}
 
 	void OpenGLContext::Init()
 	{
+		WU_PROFILE_FUNCTION();
 		glfwMakeContextCurrent(m_WindowHandle);
 		
 		if (!gladLoadGL(glfwGetProcAddress))
@@ -22,6 +24,7 @@ namespace Wukong
 
 	void OpenGLContext::SwapBuffers()
 	{
+		WU_PROFILE_FUNCTION();
 		glfwSwapBuffers(m_WindowHandle);
 	}
 }

@@ -9,6 +9,7 @@ namespace Wukong
 {
     OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height, void* data)
     {
+        WU_PROFILE_FUNCTION();
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
         // set the texture wrapping parameters
@@ -32,6 +33,7 @@ namespace Wukong
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
         :m_Path(path)
 	{
+        WU_PROFILE_FUNCTION();
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID); 
         // set the texture wrapping parameters
@@ -44,7 +46,12 @@ namespace Wukong
         int width, height, nrChannels;
 
         stbi_set_flip_vertically_on_load(true);
-        unsigned char* data = stbi_load(m_Path.c_str(), &width, &height, &nrChannels, 0);
+        unsigned char* data = nullptr;
+        {
+            WU_PROFILE_SCOPE("stbi_load - Load OpenGL Texture");
+            data = stbi_load(m_Path.c_str(), &width, &height, &nrChannels, 0);
+        }
+
         GLenum dataFormat = 0;
         if (nrChannels == 4)
         {
@@ -72,11 +79,13 @@ namespace Wukong
 	
 	OpenGLTexture2D::~OpenGLTexture2D()
 	{
+        WU_PROFILE_FUNCTION();
         glDeleteTextures(1, &m_RendererID);
 	}
 
 	void  OpenGLTexture2D::Bind(uint32_t slot) const
 	{
+        WU_PROFILE_FUNCTION();
         glActiveTexture(GL_TEXTURE0+slot);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
 	}

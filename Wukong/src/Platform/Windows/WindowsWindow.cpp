@@ -36,21 +36,28 @@ namespace Wukong
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		WU_PROFILE_FUNCTION();
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
 		WU_CORE_INFO("Create window {0}({1},{2})", props.Title, props.Width, props.Height);
 
-		if (!s_GLFWInitialized)
 		{
-			int success = glfwInit();
-			WU_CORE_ASSERT(success, "Could not initialize GLFW");
-			glfwSetErrorCallback(GLFWErrorCallback);
-			s_GLFWInitialized = true;
+			WU_PROFILE_SCOPE("glfwInit");
+			if (!s_GLFWInitialized)
+			{
+				int success = glfwInit();
+				WU_CORE_ASSERT(success, "Could not initialize GLFW");
+				glfwSetErrorCallback(GLFWErrorCallback);
+				s_GLFWInitialized = true;
+			}
 		}
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
-	
+		{
+			WU_PROFILE_SCOPE("glfwCreateWindow");
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, props.Title.c_str(), nullptr, nullptr);
+		}
+
 		m_Context = CreateScope<OpenGLContext>(m_Window);
 		m_Context->Init();
 
@@ -140,11 +147,13 @@ namespace Wukong
 
 	void WindowsWindow::ShutDown()
 	{
+		WU_PROFILE_FUNCTION();
 		glfwDestroyWindow(m_Window);
 	}
 
 	void WindowsWindow::OnUpdate()
 	{
+		WU_PROFILE_FUNCTION();
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
