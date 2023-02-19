@@ -120,6 +120,10 @@ namespace Wukong
     {
         glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
     }
+    void OpenGLShader::SetIntArray(const std::string& name, int* value, uint32_t count) const
+    {
+        glUniform1iv(glGetUniformLocation(m_RendererID, name.c_str()), count, value);
+    }
     void OpenGLShader::SetFloat(const std::string& name, float value) const
     {
         glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);

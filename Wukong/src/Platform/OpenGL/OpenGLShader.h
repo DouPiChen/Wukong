@@ -18,6 +18,7 @@ namespace Wukong
 
         virtual void SetBool(const std::string& name, bool value) const override;
         virtual void SetInt(const std::string& name, int value) const override;
+        virtual void SetIntArray(const std::string& name, int* value, uint32_t count) const override;
         virtual void SetFloat(const std::string& name, float value) const override;
         virtual void SetVec2(const std::string& name, const glm::vec2& value) const override;
         virtual void SetVec2(const std::string& name, float x, float y) const override;

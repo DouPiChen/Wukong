@@ -83,7 +83,7 @@ namespace Wukong
         glDeleteTextures(1, &m_RendererID);
 	}
 
-	void  OpenGLTexture2D::Bind(uint32_t slot) const
+	void OpenGLTexture2D::Bind(uint32_t slot) const
 	{
         WU_PROFILE_FUNCTION();
         glActiveTexture(GL_TEXTURE0+slot);
